@@ -51,7 +51,7 @@ export const loginController = async (req: Request, res: Response) => {
                 role: user.role
             }
         })
-    } catch (error){
+    } catch (error : any){
         console.error("Login Error", error)
         res.status(500).json({
             message: "Server error"
