@@ -74,15 +74,37 @@ export const updateProduct = async (req: Request, res: Response) => {
             })
         }
 
+        // check status product harus antara ready dan preorder
+        if(data.stock && !["ready", "preorder"].includes(data.stock)){
+            return res.status(400).json({
+                message: "Invalid stock value. Must be either 'ready' or 'preorder'.",
+            });
+        }
+
+        // lakukan update dengan konversi tipe sesuai schema
         // jika ada maka
         const updated = await prisma.product.update({
-            where : {id:Number(id)},
-            data
+            where: {id:Number(id)},
+            data: {
+                ...(data.name && {name: data.name}),
+                ...(data.description && {description: data.description}),
+                ...(data.stock && {stock: data.stock as any}),
+                ...(data.images && {images: data.images}),
+                ...(data.brand_id && {brand_id: Number(data.brand_id)}),
+                ...(data.category_id && {category_id: Number(data.category_id)}),
+                ...(data.location_id && {location_id: Number(data.location_id)})
+            }
         })
+
+        const sanitized = {
+            ...updated,
+            price: Number(updated.price),
+        };
+
 
         res.status(200).json({
             message:"Success to update product",
-            product: updated
+            product: sanitized
         })
     } catch (error : any){
         console.error("Error updating product", error)
@@ -91,6 +113,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         })
     }
 }
+
 
 // DELETE
 // menghapus product yang ada
@@ -133,61 +156,54 @@ export const deleteProduct = async (req: Request, res: Response) => {
 // ambil semua product
 export const getAllProduct = async (req: Request, res: Response) => {
     try {
-
-        // inisiasi product
         const product = await prisma.product.findMany({
-            include : {
-                brand : true,
-                category: true,
-                location: true
-            }
-        })
-        
-        res.status(200).json({
-            message:"Success get all product",
-            products: product
-        })
+        include: { brand: true, category: true, location: true }
+        });
 
-    } catch (error: any){
-        console.error("Error read all product", error)
-        return res.status(500).json({
-            message:"Failed to read product"
-        })
+        // ← tambahkan ini
+        const sanitized = product.map(p => ({
+        ...p,
+        price: Number(p.price),
+        }));
+
+        res.status(200).json({
+        message: "Success get all product",
+        products: sanitized, // ← pakai yang sudah disanitasi
+        });
+    } catch (error: any) {
+        console.error("Error read all product", error);
+        return res.status(500).json({ message: "Failed to read product" });
     }
-}
+};
+
 
 // GET : id
 // ambil product berdasarkan id saja
 export const getProductbyId = async (req: Request, res: Response) => {
     try {
-        // inisiasi id
-        const {id} = req.params
-        // untuk narik product yang akan ditampilkan
+        const { id } = req.params;
         const product = await prisma.product.findUnique({
-            where : {id: Number(id)},
-            include : {
-                brand: true, 
-                category: true,
-                location: true
-            }
-        })
-        // check apakah ada product
-        if(!product){
-            return res.status(404).json({
-                message:"Product not found"
-            })
+        where: { id: Number(id) },
+        include: { brand: true, category: true, location: true }
+        });
+
+        if (!product) {
+        return res.status(404).json({ message: "Product not found" });
         }
 
-        // jika ada productnya, maka tampilkan productnya
-        res.status(200).json({
-            message:"Success get product",
-            product: product
-        })
+        // ← tambahkan ini
+        const sanitized = {
+        ...product,
+        price: Number(product.price),
+        };
 
-    } catch (error : any){
-        console.error("Error get product", error)
-        return res.status(500).json({
-            message:"Failed to get product by id"
-        })
+        res.status(200).json({
+        message: "Success get product",
+        product: sanitized, // ← kirim yang sudah disanitasi
+        });
+    } catch (error: any) {
+        console.error("Error get product", error);
+        return res.status(500).json({ message: "Failed to get product by id" });
     }
-}
+};
+
