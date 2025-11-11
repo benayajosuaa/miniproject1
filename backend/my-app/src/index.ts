@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from "cors";
 
 import authRoutes from './routes/auth.route'; 
+import productRoutes from './routes/product.route'
 
 // === Load environment variable ===
 dotenv.config();
@@ -32,6 +33,9 @@ app.get('/', (req: Request, res: Response)=> {
 // === Route Backend ===
 // 1. Login
 app.use('/api/auth', authRoutes)
+// 2. CRUD dashboard
+app.use('/api/products', productRoutes)
+
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
