@@ -87,7 +87,7 @@ export const updateCategory = async (req: Request, res:Response) => {
 export const deleteCategory = async (req: Request, res: Response) => {
     try {
         const {id} = req.params
-        
+        // check apakah id itu adalah suatu hal yang valid
         if(isNaN(Number(id))){
             return res.status(404).json({
                 message:"Invalid category ID format"
@@ -102,7 +102,7 @@ export const deleteCategory = async (req: Request, res: Response) => {
                 message:"Category not found"
             })
         }
-
+        // delete jika benar
         await prisma.category.delete({
             where: {id:Number(id)}
         })
