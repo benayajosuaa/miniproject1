@@ -12,11 +12,11 @@ router.get("/", getAllCategory)
 router.get("/:id", getCategoryById)
 
 // create category - admin
-router.post("/", requireAdmin, requireAuth, createCategory)
+router.post("/", requireAuth, requireAdmin, createCategory)
 // update category - admin
-router.put("/", requireAdmin, requireAuth, updateCategory)
+router.put("/", requireAuth, requireAdmin, updateCategory)
 // delete category - admin
-router.delete("/:id", requireAdmin, requireAuth, deleteCategory)
+router.delete("/:id", requireAuth, requireAdmin, deleteCategory)
 
 
 export default router
