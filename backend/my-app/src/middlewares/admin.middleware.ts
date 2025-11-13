@@ -14,7 +14,7 @@ export const requireAdmin = (req: AuthRequest, res: Response, next:NextFunction)
         // check apakah role user adalah superadmin ? 
         if(req.user.role !== "superadmin"){
             return res.status(403).json({
-                message:"access denied, admin onlu"
+                message:"access denied, admin only"
             })
         }
 
