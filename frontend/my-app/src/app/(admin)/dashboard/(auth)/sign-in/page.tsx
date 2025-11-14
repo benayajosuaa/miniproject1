@@ -2,15 +2,22 @@
 
 import React from "react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function SignInPage (){
     
+    const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    const handleSubmit = (e : any) => {
+    const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         console.log("Email Login :", email, "Password :", password)
+
+        if (email && password) {
+            router.push("/dashboard")
+        }
     };
     
     return (
@@ -56,20 +63,18 @@ export default function SignInPage (){
                                     className="w-full p-2 pr-3 pl-3 border text-sm border-slate-500 rounded-xl"
                                 />
                             </div>
+                            {/* Button */}
+                            <div>
+                                <button 
+                                    type="submit"
+                                    disabled={!email || !password}
+                                    className={`bg-blue-500 p-2 w-full text-center rounded-xl ${email && password ? "bg-blue-500" : "bg-gray-400 cursor-not-allowed"} text-white`}
+                                >
+                                    Sign In
+                                </button>
+                            </div>
                         </form>
                     </div>
-
-                    {/* Button */}
-                    <div>
-                        <button 
-                            type="submit"
-                            className="bg-blue-500 p-2 w-full text-center rounded-xl text-white"
-                        >
-                            Sign In
-                        </button>
-                    </div>
-
-
                 </div>
             </div>
             
