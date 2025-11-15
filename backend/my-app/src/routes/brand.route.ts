@@ -14,7 +14,7 @@ router.get("/:id", getBrandById)
 // CREATE - admin 
 router.post("/", requireAuth, requireAdmin, createBrand)
 // UPDATE - admin 
-router.post("/:id", requireAuth, requireAdmin, updateBrand)
+router.put("/:id", requireAuth, requireAdmin, updateBrand)
 // DELETE - admin 
 router.delete("/:id", requireAuth, requireAdmin, deleteBrand)
 
