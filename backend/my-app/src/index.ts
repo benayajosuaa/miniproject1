@@ -6,6 +6,7 @@ import cors from "cors";
 import authRoutes from './routes/auth.route'; 
 import productRoutes from './routes/product.route'
 import categoryRoutes from './routes/category.route'
+import locationRoutes from './routes/location.route'
 
 // === Load environment variable ===
 dotenv.config();
@@ -37,7 +38,9 @@ app.use('/api/auth', authRoutes)
 // 2. CRUD dashboard
 app.use('/api/products', productRoutes)
 // 3. CRUD category
-app.use('/api/category', categoryRoutes)
+app.use('/api/categories', categoryRoutes)
+// 4. CRUD location
+app.use('/api/locations', locationRoutes)
 
 
 app.listen(PORT, () => {
