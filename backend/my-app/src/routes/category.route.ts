@@ -14,7 +14,7 @@ router.get("/:id", getCategoryById)
 // create category - admin
 router.post("/", requireAuth, requireAdmin, createCategory)
 // update category - admin
-router.put("/", requireAuth, requireAdmin, updateCategory)
+router.put("/:id", requireAuth, requireAdmin, updateCategory)
 // delete category - admin
 router.delete("/:id", requireAuth, requireAdmin, deleteCategory)
 
