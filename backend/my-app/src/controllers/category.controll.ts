@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../lib/prisma";
+import { link } from "fs";
 
 // CREATE
 // membuat category - admin 
@@ -102,6 +103,17 @@ export const deleteCategory = async (req: Request, res: Response) => {
                 message:"Category not found"
             })
         }
+        // jika ada product yang menggunakan category itu 
+        const linkedProducts = await prisma.product.count({ 
+            where : {category_id: Number(id)}
+        })
+        if (linkedProducts > 0 ){
+            return res.status(409).json({
+                message:`cannot delete this category, because ${linkedProducts} product still linked to this category`
+            })
+        }
+
+
         // delete jika benar
         await prisma.category.delete({
             where: {id:Number(id)}
