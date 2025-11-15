@@ -27,7 +27,7 @@ export const createBrand = async (req: Request, res: Response) => {
             }
         })
 
-        return res.status(200).json({
+        return res.status(201).json({
             message:"Brand created",
             newBrand: brand
         })
@@ -52,18 +52,33 @@ export const updateBrand = async (req: Request, res:Response) => {
                 message:"Invalid brand Id"
             })
         }
+        // buat object kosongan untuk nimpa update
+        const data : {name?: string, logo?: string} = {}
+        // check nama
+        if(name && name.trim()){
+            data.name = name.trim()
+        }
+        // check logo
+        if(logo && logo.trim()){
+            data.logo = logo.trim()
+        }
 
-        const brand = await prisma.brand.update({
-            where : {id: Number(id)},
-            data : {
-                name : name?.trim(),
-                logo: logo?.trim()
-            }
+        // check apakah user ada ngubah atau data yang mau di update ? 
+        if(Object.keys(data).length === 0){
+            return res.status(400).json({
+                message:"No valid fields to update"
+            })
+        }
+
+        const brandupdate = await prisma.brand.update({
+            where: {id : Number(id)},
+            data
         })
 
         return res.status(200).json({
             message:"Success brand updated",
-            data : brand
+            data: brandupdate
+            
         })
 
 
@@ -97,7 +112,7 @@ export const deleteBrand = async (req: Request, res: Response) => {
         })
 
     } catch (error : any){
-        console.error("Error to delete product", error)
+        console.error("Error to delete brand", error)
         return res.status(500).json({
             message:"Internal server error"
         })
@@ -133,8 +148,8 @@ export const getBrandById = async (req: Request, res: Response) => {
         const id = Number(req.params.id)
 
         if(isNaN(id)){
-            return res.status(404).json({
-                message:"Id not found"
+            return res.status(400).json({
+                message:"Invalid brand Id"
             })
         }
 
@@ -143,8 +158,15 @@ export const getBrandById = async (req: Request, res: Response) => {
             include: {products: true}
         })
 
+        if(!brandById){
+            return res.status(404).json({
+                message:"Brand not found"
+            })
+        }
+
         return res.status(200).json({
-            message:"Success to get product by Id"
+            message:"Success to get brand by Id", 
+            data : brandById
         })
 
     } catch (error : any){
