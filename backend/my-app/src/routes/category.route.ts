@@ -3,7 +3,7 @@ import { Router } from "express";
 import { requireAuth,  } from "../middlewares/auth.middleware";
 import { requireAdmin } from "../middlewares/admin.middleware";
 
-import { createCategory, updateCategory, deleteCategory, getAllCategory, getCategoryById } from "../controllers/category.controll";
+import { createCategory, updateCategory, deleteCategory, getAllCategory, getCategoryById } from "../controllers/category.controller";
 
 const router = Router()
 // get all category - admin & user
