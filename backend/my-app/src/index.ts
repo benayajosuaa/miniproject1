@@ -3,10 +3,12 @@ import type { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from "cors";
 
+import { errorHandler } from './middlewares/errorhandler.middleware';
 import authRoutes from './routes/auth.route'; 
 import productRoutes from './routes/product.route'
 import categoryRoutes from './routes/category.route'
 import locationRoutes from './routes/location.route'
+
 
 // === Load environment variable ===
 dotenv.config();
@@ -43,7 +45,15 @@ app.use('/api/categories', categoryRoutes)
 app.use('/api/locations', locationRoutes)
 
 
+app.use((req: Request, res:Response) => {
+    res.status(404).json({
+        status:"error",
+        message:"Route not found"
+    })
+})
+
+app.use(errorHandler)
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
-
