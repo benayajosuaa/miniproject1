@@ -8,7 +8,7 @@ import authRoutes from './routes/auth.route';
 import productRoutes from './routes/product.route'
 import categoryRoutes from './routes/category.route'
 import locationRoutes from './routes/location.route'
-
+import brandRoutes from './routes/brand.route'
 
 // === Load environment variable ===
 dotenv.config();
@@ -37,12 +37,16 @@ app.get('/', (req: Request, res: Response)=> {
 // === Route Backend ===
 // 1. Login
 app.use('/api/auth', authRoutes)
+// 1a. Register
+app.use('/api/register', authRoutes)
 // 2. CRUD dashboard
 app.use('/api/products', productRoutes)
 // 3. CRUD category
 app.use('/api/categories', categoryRoutes)
 // 4. CRUD location
 app.use('/api/locations', locationRoutes)
+// 5. CRUD brand
+app.use('/api/brand', brandRoutes)
 
 
 app.use((req: Request, res:Response) => {
