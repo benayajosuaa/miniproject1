@@ -9,6 +9,7 @@ import productRoutes from './routes/product.route'
 import categoryRoutes from './routes/category.route'
 import locationRoutes from './routes/location.route'
 import brandRoutes from './routes/brand.route'
+import orderRoutes from "./routes/order.route"
 
 // === Load environment variable ===
 dotenv.config();
@@ -47,6 +48,8 @@ app.use('/api/categories', categoryRoutes)
 app.use('/api/locations', locationRoutes)
 // 5. CRUD brand
 app.use('/api/brand', brandRoutes)
+// 6. Order
+app.use("/orders", orderRoutes);
 
 
 app.use((req: Request, res:Response) => {
