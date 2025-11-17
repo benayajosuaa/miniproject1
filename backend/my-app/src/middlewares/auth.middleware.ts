@@ -7,15 +7,15 @@ export interface AuthRequest extends Request {
         email: string;
         role: string;
     };
-    }
+}
 
-    interface JwtPayloadCustom extends jwt.JwtPayload {
+interface JwtPayloadCustom extends jwt.JwtPayload {
     id: number;
     email: string;
     role: string;
-    }
+}
 
-    export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         // ambil header Authorization
         const authHeader = req.headers.authorization;

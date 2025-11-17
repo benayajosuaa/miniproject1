@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import prisma from "../lib/prisma";
 import { ApiError } from "../utils/apiError";
-import { use } from "react";
 
 // Register Controller
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +18,6 @@ export const registerController = async (req: Request, res: Response, next: Next
         if(!nameString || !emailString || !passwordString){
             throw new ApiError(400, "Name, email, password are required")
         }
-
         // check format email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(emailString)) {
@@ -30,14 +28,13 @@ export const registerController = async (req: Request, res: Response, next: Next
         const userExist = await prisma.user.findUnique({
             where : {email: emailString}
         })
-
         if(userExist){
             throw new ApiError(409, "Email already registered")
         }
 
+
         // hash password yang dibuat user
         const hashedPassword = await bcrypt.hash(passwordString, 10)
-
         // ambil jwt secret
         const JWT_SECRET = process.env.JWT_SECRET
         if(!JWT_SECRET){
@@ -75,15 +72,11 @@ export const registerController = async (req: Request, res: Response, next: Next
                     role: newUser.role
                 }
             }
-
         })
-
     } catch (error){
         next (error)
     }
 }
-
-
 
 
 
