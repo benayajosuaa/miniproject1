@@ -9,19 +9,11 @@ export const createBrand = async (req: Request, res: Response, next:NextFunction
     try {
 
         const {name, logo} = req.body
-        // check name harus ada
         if (!name || !name.trim()){
             throw new ApiError(400,"Brand name is required")
-            // return res.status(400).json({
-            //     message:"Brand name is required"
-            // })
         }
-        // check logo harus ada
+
         if(!logo || !logo.trim()){
-            throw new ApiError(400, "Brand Logo is required")
-            // return res.status(400).json({
-            //     message:"Brand logo is required"
-            // })
         }
         // buat brandnya
         const brand = await prisma.brand.create({
@@ -51,9 +43,6 @@ export const updateBrand = async (req: Request, res: Response, next:NextFunction
 
         if(isNaN(Number(id))){
             throw new ApiError(400, "Invalid brand Id")
-            // return res.status(400).json({
-            //     message:"Invalid brand Id"
-            // })
         }
         // buat object kosongan untuk nimpa update
         const data : {name?: string, logo?: string} = {}
@@ -69,9 +58,6 @@ export const updateBrand = async (req: Request, res: Response, next:NextFunction
         // check apakah user ada ngubah atau data yang mau di update ? 
         if(Object.keys(data).length === 0){
             throw new ApiError(400, "No valid fields to update")
-            // return res.status(400).json({
-            //     message:"No valid fields to update"
-            // })
         }
 
         const brandupdate = await prisma.brand.update({
@@ -100,9 +86,6 @@ export const deleteBrand = async (req: Request, res: Response, next:NextFunction
         // check validasi id
         if(isNaN(id)){
             throw new ApiError(400, "Invalid brand Id")
-            // return res.status(400).json({
-            //     message: "Invalid brand Id"
-            // })
         }
         // jika ada brand yang kesambung dengan product
         const productLinked = await prisma.product.count({
@@ -129,17 +112,51 @@ export const deleteBrand = async (req: Request, res: Response, next:NextFunction
 
 // GET - all 
 // nampilin semua brand - admin & user
+// buat pagination + search
 export const getAllBrand = async (req: Request, res: Response, next:NextFunction) => {
     try {
+        // ambil query dari URL
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 10
+        const search = req.query.search?.toString() || ""
+
+        // hitung data yang perlu di skip 
+        const skip = (page - 1) * limit
+
+        // buat object filter where 
+        const whereClause : any = {}
+        // buat filter search 
+        if(search){
+            whereClause.name = {
+                contains: search,
+                mode: "insensitive"
+            }
+        }
+        
+        const totalItems = await prisma.brand.count({
+            where: whereClause
+        })
 
         const brands = await prisma.brand.findMany({
+            where: whereClause,
+            skip,
+            take: limit,
             orderBy: {name:"asc"}, 
             include: {products: true}
         })
 
+        // hitung total halaman 
+        const totalPages = Math.ceil(totalItems/limit)
+    
         return res.status(200).json({
             status:"success",
             message: "success to get all data",
+            pagination : {
+                currentPage : page,
+                totalPages,
+                totalItems,
+                limit
+            },
             data : brands
         })
     } catch (error){
@@ -155,9 +172,6 @@ export const getBrandById = async (req: Request, res: Response, next:NextFunctio
 
         if(isNaN(id)){
             throw new ApiError(400, "Invalid brand Id")
-            // return res.status(400).json({
-            //     message:"Invalid brand Id"
-            // })
         }
 
         const brandById = await prisma.brand.findUnique({
@@ -167,9 +181,6 @@ export const getBrandById = async (req: Request, res: Response, next:NextFunctio
 
         if(!brandById){
             throw new ApiError(404, "Brand not found")
-            // return res.status(404).json({
-            //     message:"Brand not found"
-            // })
         }
 
         return res.status(200).json({
