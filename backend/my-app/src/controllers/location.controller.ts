@@ -94,19 +94,75 @@ export const deleteLocation = async (req: Request, res: Response, next:NextFunct
 // menampilkan semua location - admin & user 
 export const getAllLocation = async (req: Request, res: Response, next:NextFunction) => {
     try {
-        const location = await prisma.location.findMany({
-            orderBy: {name : "asc"}
-        })
+
+        // pagination 
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 10
+        const search = req.query.search?.toString() || ""
+        const hasProduct = req.query.hasProduct?.toString()
+
+        const skip = (page - 1) * limit
+
+        const whereClause : any = {}
+
+        // filter search
+        if (search) {
+            whereClause.name = {
+                contains: search,
+                mode: "insensitive"
+            }
+        }
+
+        // filter by apakah punya product
+        if (hasProduct === "true") {
+            whereClause.locations = {   
+                some: {}
+            }
+        }
+
+        if (hasProduct === "false") {
+            whereClause.locations = {   
+                none: {}
+            }
+        }
+
+        // hitung total data
+        const totalItems = await prisma.location.count({
+            where: whereClause
+        });
+
+        // ambil data lokasi
+        const locations = await prisma.location.findMany({
+            where: whereClause,
+            orderBy: { name: "asc" },
+            skip,
+            take: limit,
+            include: {
+                _count: {
+                    select: { locations: true }
+                }
+            }
+        });
+
+        const totalPages = Math.ceil(totalItems / limit);
 
         return res.status(200).json({
-            status:"success",
-            message:"Success get all location",
-            locations: location
-        })
+            status: "success",
+            message: "Locations fetched successfully",
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems,
+                limit
+            },
+            data: locations
+        });
+
     } catch (error){
         next(error)
     }
 }
+
 
 // GET by id
 // menampilkan hanya Id tertentu - admin & user
