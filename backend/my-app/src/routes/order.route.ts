@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createOrder, getAllOrder, getMyOrder, getOrderById, updateOrderStatus} from "../controllers/order.controller";
-
+import { requireAdmin } from "../middlewares/admin.middleware";
 import { requireAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -16,9 +16,9 @@ router.get("/my-orders", requireAuth, getMyOrder);
 router.get("/:id", requireAuth, getOrderById);
 
 // GET ALL ORDERS - ADMIN 
-router.get("/", requireAuth, getAllOrder);
+router.get("/", requireAuth, requireAdmin, getAllOrder);
 
 // UPDATE ORDER STATUS - ADMIN 
-router.patch("/:id/status", requireAuth, updateOrderStatus);
+router.patch("/:id/status", requireAuth, requireAdmin, updateOrderStatus);
 
 export default router;

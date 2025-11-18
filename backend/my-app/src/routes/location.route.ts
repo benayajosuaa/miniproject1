@@ -13,8 +13,8 @@ router.get("/:id", getLocationById)
 // CREATE - admin
 router.post("/", requireAuth, requireAdmin, createLocation)
 // UPDATE - admin 
-router.put("/:id", requireAuth, requireAdmin, updateLocation)
+router.put("/:id", requireAdmin, requireAuth, updateLocation)
 // DELETE - admin 
-router.delete("/:id", requireAuth, requireAdmin, deleteLocation)
+router.delete("/:id", requireAdmin, requireAuth, deleteLocation)
 
 export default router
