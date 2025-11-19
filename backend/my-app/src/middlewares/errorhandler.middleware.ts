@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { Prisma } from "@prisma/client";
-import { ApiError } from "../utils/apiError";
+import { ApiError } from "../utils/ApiError"
 
 export const errorHandler = (err: any, req: Request, res:Response, _next:NextFunction) => {
     // tangkap eror secara global 

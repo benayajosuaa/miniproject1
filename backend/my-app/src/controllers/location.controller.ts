@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction} from "express";
 import prisma from "../lib/prisma";
-import { ApiError } from "../utils/apiError";
+import { ApiError } from "../utils/ApiError";
 
 // CREATE
 // buat lokasi baru - admin 

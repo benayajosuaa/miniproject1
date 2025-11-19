@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import prisma from "../lib/prisma";
-import { ApiError } from "../utils/apiError";
+import { ApiError } from "../utils/ApiError";
 
 // Register Controller
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
