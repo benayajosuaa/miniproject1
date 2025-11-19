@@ -1,8 +1,8 @@
 import prisma from "../lib/prisma";
-import { ApiError } from "../utils/apiError";
+import { ApiError } from "../utils/ApiError";
 import { CreateOrderInput, OrderProductInput } from "../types/order.type";
 import { randomInt } from "crypto"
-import { timeStamp } from "console";
+
 
 // generate ID
 const generateOrderCode = () => {
